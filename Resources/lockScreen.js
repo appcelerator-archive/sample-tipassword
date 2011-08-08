@@ -115,6 +115,7 @@ var createLockScreen = function(options) {
 					
 					password.focus();
 				} else {
+				    password.value = '';
 					unlockApp();
 				}
 			});
