@@ -43,13 +43,15 @@ var createLockScreen = function(options) {
 			if(lockScreen.passwordScreen == null) {
 				passwordScreen = createLockScreen();
 			}
-					
-			passwordScreen.open({modal: true});
+			
+			setTimeout(function() {
+			     passwordScreen.open({modal: true});
+			}, 5);
 			
 			// Let the open event fire
-			setTimeout(function() {
-				password.focus();
-			}, 1);
+			passwordScreen.addEventListener('focus', function() {
+			    password.focus();
+			});
 			
 			return true;
 	}
@@ -73,7 +75,7 @@ var createLockScreen = function(options) {
 			title = Ti.UI.createView({
 				backgroundImage:'images/pc_bg.png',
 				height:100,
-				top:10
+				top:0
 			});
 			win.add(title);
 			
@@ -88,7 +90,7 @@ var createLockScreen = function(options) {
 			title.add(text);
 			
 			pass_holder = Ti.UI.createView({
-				top:195,
+				top:175,
 				backgroundImage:'images/pc_bg.png',
 				height:70
 			});
