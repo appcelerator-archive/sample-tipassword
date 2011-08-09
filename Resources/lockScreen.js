@@ -40,13 +40,17 @@ var createLockScreen = function(options) {
 				return false;
 			}
 			
-			if(lockScreen.passwordScreen == null) {
+			if(passwordScreen == null) {
 				passwordScreen = createLockScreen();
 			}
 			
-			setTimeout(function() {
-			     passwordScreen.open({modal: true});
-			}, 5);
+			if(!passwordScreen.locked) {
+    			passwordScreen.locked = true;
+    			
+    			setTimeout(function() {
+    			     passwordScreen.open({modal: true});
+    			}, 5);
+			}
 			
 			// Let the open event fire
 			passwordScreen.addEventListener('focus', function() {
@@ -57,14 +61,18 @@ var createLockScreen = function(options) {
 	}
 	
 	function unlockApp() {
-		
+		    if(passwordScreen.locked) {
+		        password.value = '';
+                passwordScreen.locked = false;
+            }
 			passwordScreen.close();
 			
 	}
 	
 	function createLockScreen() {
 			win = Ti.UI.createWindow({
-				navBarHidden: true
+				navBarHidden: true,
+				locked: false
 			});
 			
 			options.backgroundColor != undefined ? win.backgroundColor = options.backgroundColor : false;
@@ -97,14 +105,21 @@ var createLockScreen = function(options) {
 			pass_holder.add(password);
 			win.add(pass_holder);
 			
-			//never loos focus
+			//never loose focus
 			password.addEventListener('blur', function() {
 				password.focus();
 			});
 			
+			var answer = Ti.App.Properties.getString('lock_key');
+			
 			password.addEventListener('change', function() {
 				if(checkPassword(password.value) == true) {
 					unlockApp();
+				}
+
+				if(options.numPad == true && password.value.length >= answer.length) {
+				    password.value = '';
+				    alert('The password entered was not correct');
 				}
 			});
 			
